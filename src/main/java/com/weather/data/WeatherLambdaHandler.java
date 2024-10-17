@@ -41,7 +41,7 @@ public class WeatherLambdaHandler implements RequestStreamHandler{
 
     static {
         try {
-            handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(SpringApplication.class);
+            handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(DataApplication.class);
         } catch (ContainerInitializationException e) {
             throw new RuntimeException("Could not initialize Spring Boot application", e);
         }
