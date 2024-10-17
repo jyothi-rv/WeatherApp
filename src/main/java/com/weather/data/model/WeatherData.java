@@ -8,18 +8,29 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 public class WeatherData {
 		@DynamoDBHashKey(attributeName = "id")
     	private String id;
+		@DynamoDBAttribute(attributeName = "name")
+		private String name;
+		@DynamoDBAttribute(attributeName = "data")
+	    private String data;
+		
+		public WeatherData(){
+			
+		}
+		
+		public WeatherData(String id, String name, String data) {
+
+			this.id = id;
+			this.name = name;
+			this.data = data;
+		}
 		public String getId() {
 			return id;
 		}
-
+		
 		public void setId(String id) {
 			this.id = id;
 		}
 
-		@DynamoDBAttribute(attributeName = "name")
-	    private String name;
-
-	    
 		public String getName() {
 			return name;
 		}
@@ -36,8 +47,7 @@ public class WeatherData {
 			this.data = data;
 		}
 
-		@DynamoDBAttribute(attributeName = "data")
-	    private String data;
+		
 
 		
    
