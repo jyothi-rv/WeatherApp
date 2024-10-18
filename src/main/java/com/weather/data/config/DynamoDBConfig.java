@@ -30,7 +30,7 @@ public class DynamoDBConfig {
                 .withCredentials(new InstanceProfileCredentialsProvider(false));
 
         if (!awsDynamoDBEndPoint.isEmpty()) {
-            builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(awsDynamoDBEndPoint, "us-east-2"));
+            builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(awsDynamoDBEndPoint, "us-east-1"));
         }
 
         return builder.build();
