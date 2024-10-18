@@ -25,15 +25,6 @@ Resources:
             Principal:
               Service: lambda.amazonaws.com
         Version: 2012-10-17
-        Policies:
-        - PolicyName: 'LambdaDynamoDBPolicy'
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: 'Allow'
-                Action:
-                  - 'dynamodb:*'
-                Resource: '*'
       ManagedPolicyArns:
         - !Join 
           - ''
@@ -41,34 +32,19 @@ Resources:
             - !Ref 'AWS::Partition'
             - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
 
-  WeatherIamPolicy:
+  LambdaDynamoDBPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyDocument:
-        Statement:
-          - Action:
-              - 'dynamodb:BatchGetItem'
-              - 'dynamodb:BatchWriteItem'
-              - 'dynamodb:ConditionCheckItem'
-              - 'dynamodb:DeleteItem'
-              - 'dynamodb:DescribeTable'
-              - 'dynamodb:GetItem'
-              - 'dynamodb:GetRecords'
-              - 'dynamodb:GetShardIterator'
-              - 'dynamodb:PutItem'
-              - 'dynamodb:Query'
-              - 'dynamodb:Scan'
-              - 'dynamodb:UpdateItem'
-            Effect: Allow
-            Resource:
-              - !GetAtt 
-                - WeatherData
-                - Arn
-              - !Ref 'AWS::NoValue'
-        Version: 2012-10-17
-      PolicyName: WeatherIamPolicy
+      PolicyName: 'LambdaDynamoDBPolicy'
       Roles:
         - !Ref WeatherIamRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Action:
+              - 'dynamodb:*'
+            Resource: '*'
 
   WeatherLambdaFunction:
     Type: 'AWS::Lambda::Function'
@@ -88,7 +64,7 @@ Resources:
       Runtime: java17
       Timeout: 30
     DependsOn:
-      - WeatherIamPolicy
+      - LambdaDynamoDBPolicy
       - WeatherIamRole
 
   WeatherLambdaRole:
@@ -102,26 +78,6 @@ Resources:
               Service: lambda.amazonaws.com
         Version: 2012-10-17
 
-  WeatherLambdaRolePolicy:
-    Type: 'AWS::IAM::Policy'
-    Properties:
-      PolicyDocument:
-        Statement:
-          - Action:
-              - 'dynamodb:DeleteItem'
-              - 'dynamodb:GetItem'
-              - 'dynamodb:PutItem'
-              - 'dynamodb:Query'
-              - 'dynamodb:Scan'
-              - 'dynamodb:UpdateItem'
-            Effect: Allow
-            Resource: !GetAtt 
-              - WeatherData
-              - Arn
-        Version: 2012-10-17
-      PolicyName: WeatherLambdaRolePolicy
-      Roles:
-        - !Ref WeatherLambdaRole
 
   WeatherRestApi:
     Type: 'AWS::ApiGateway::RestApi'
