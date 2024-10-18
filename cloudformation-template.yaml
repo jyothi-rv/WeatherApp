@@ -55,7 +55,7 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref WeatherData
-          AWS_REGION: 'us-east-1'
+          MY_AWS_REGION: 'us-east-1'
       Handler: com.weather.data.WeatherLambdaHandler::handleRequest
       MemorySize: 1024
       Role: !GetAtt 
