@@ -18,24 +18,29 @@ public class DynamoDBConfig {
 	 * @Value("${aws.access.secret-key}") private String awsSecretKey;
 	 */
 
-    @Value("${aws.dynamodb.endpoint}")
-    private String awsDynamoDBEndPoint;
+    @Value("${amazon.dynamodb.endpoint:}")
+    private String amazonDynamoDBEndpoint;
 
+    @Value("${amazon.aws.region}")
+    private String awsRegion;
 	/*
 	 * @Value("${aws.region}") private String awsRegion;
 	 */
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
-        AmazonDynamoDBClientBuilder builder = AmazonDynamoDBClientBuilder.standard()
-                .withCredentials(new InstanceProfileCredentialsProvider(false));
-
-        if (!awsDynamoDBEndPoint.isEmpty()) {
-            builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(awsDynamoDBEndPoint, "us-east-1"));
+    	  AmazonDynamoDBClientBuilder builder = AmazonDynamoDBClientBuilder.standard()
+                  .withCredentials(new InstanceProfileCredentialsProvider(false))
+                  .withRegion(awsRegion);
+        if (!amazonDynamoDBEndpoint.isEmpty()) {
+            builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(amazonDynamoDBEndpoint, awsRegion));
         }
-
         return builder.build();
     }
 
+    @Bean
+    public DynamoDBMapper dynamoDBMapper(AmazonDynamoDB amazonDynamoDB) {
+        return new DynamoDBMapper(amazonDynamoDB);
+    }
 	/*
 	 * @Bean public AWSCredentials amazonAWSCredentials(){ return new
 	 * BasicAWSCredentials(awsAccessKey, awsSecretKey); }
@@ -50,8 +55,5 @@ public class DynamoDBConfig {
 	 * .withCredentials(amazonAWSCredentialsProvider()) .build(); }
 	 */
 
-    @Bean
-    public DynamoDBMapper mapper(){
-        return new DynamoDBMapper(amazonDynamoDB());
-    }
+   
 }

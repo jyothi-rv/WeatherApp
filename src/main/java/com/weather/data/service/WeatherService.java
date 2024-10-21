@@ -49,7 +49,7 @@ public class WeatherService {
             String jsonString = objectMapper.writeValueAsString(apiResponse);
             System.out.println(jsonString);
             WeatherData weatherData = mapToWeatherData(apiResponse,city);
-            saveToDynamoDB(weatherData);
+            dynamoDBMapper.save(weatherData);
             return weatherData;
         } catch (IOException e) {
             throw new RuntimeException("Error parsing weather API response", e);
@@ -66,8 +66,6 @@ public class WeatherService {
         return weatherData;
     }
 
-    private void saveToDynamoDB(WeatherData weatherData) {
-        dynamoDBMapper.save(weatherData);
-    }
+   
 	
 }

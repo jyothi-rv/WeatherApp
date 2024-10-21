@@ -1,21 +1,11 @@
 package com.weather.data.repository;
 
-import java.util.List;
+import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
+import org.springframework.data.repository.CrudRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.weather.data.model.WeatherData;
 
-@Repository
-public class WeatherDataRepository {
-	 @Autowired
-	    private DynamoDBMapper dynamoDBMapper;
+@EnableScan
+public interface WeatherDataRepository extends CrudRepository<WeatherData, String>{
 
-	    public void save(WeatherData weatherData) {
-	        dynamoDBMapper.save(weatherData);
-	    }
-	  
 }
