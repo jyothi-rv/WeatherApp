@@ -1,5 +1,7 @@
 package com.weather.data.config;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,9 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+
 @Configuration
 public class DynamoDBConfig {
 	/*
@@ -18,29 +23,24 @@ public class DynamoDBConfig {
 	 * @Value("${aws.access.secret-key}") private String awsSecretKey;
 	 */
 
-    @Value("${amazon.dynamodb.endpoint:}")
-    private String amazonDynamoDBEndpoint;
-
-    @Value("${amazon.aws.region}")
-    private String awsRegion;
+	@Value("${aws-endpoint}")
+	private String amazonDynamoDBEndpoint;
 	/*
 	 * @Value("${aws.region}") private String awsRegion;
 	 */
     @Bean
-    public AmazonDynamoDB amazonDynamoDB() {
-    	  AmazonDynamoDBClientBuilder builder = AmazonDynamoDBClientBuilder.standard()
-                  .withCredentials(new InstanceProfileCredentialsProvider(false))
-                  .withRegion(awsRegion);
-        if (!amazonDynamoDBEndpoint.isEmpty()) {
-            builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(amazonDynamoDBEndpoint, awsRegion));
-        }
-        return builder.build();
-    }
+	public DynamoDbClient dynamoDbClient() {
+		AmazonDynamoDBClientBuilder builder = AmazonDynamoDBClientBuilder.standard()
+				.withCredentials(new InstanceProfileCredentialsProvider(false));
 
-    @Bean
-    public DynamoDBMapper dynamoDBMapper(AmazonDynamoDB amazonDynamoDB) {
-        return new DynamoDBMapper(amazonDynamoDB);
-    }
+		if (!amazonDynamoDBEndpoint.isEmpty()) {
+			builder.withEndpointConfiguration(
+					new AwsClientBuilder.EndpointConfiguration(amazonDynamoDBEndpoint, "us-east-1"));
+		}
+
+		return DynamoDbClient.builder().endpointOverride(URI.create(amazonDynamoDBEndpoint)).region(Region.US_EAST_1)
+				.build();
+	}
 	/*
 	 * @Bean public AWSCredentials amazonAWSCredentials(){ return new
 	 * BasicAWSCredentials(awsAccessKey, awsSecretKey); }
