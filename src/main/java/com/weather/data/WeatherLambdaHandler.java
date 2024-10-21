@@ -6,12 +6,11 @@ import java.io.OutputStream;
 
 import org.springframework.boot.SpringApplication;
 
-import com.amazonaws.serverless.exceptions.ContainerInitializationException;
 import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.serverless.proxy.spring.SpringBootLambdaContainerHandler;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 /*
  * public class WeatherLambdaHandler implements RequestStreamHandler<Map<String,
@@ -35,23 +34,25 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
  * response.setBody("An error occurred: " + e.getMessage()); } return response;
  * } }
  */
-public class WeatherLambdaHandler implements RequestStreamHandler{
+public class WeatherLambdaHandler implements RequestHandler<AwsProxyRequest, AwsProxyResponse>{
 
 	private static final SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
-    static {
+	static {
         try {
             handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(DataApplication.class);
-        } catch (ContainerInitializationException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Could not initialize Spring Boot application", e);
         }
     }
 
-    
 	@Override
-	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
-		// TODO Auto-generated method stub
-		 handler.proxyStream(input, output, context);
-	}
+    public AwsProxyResponse handleRequest(AwsProxyRequest awsProxyRequest, Context context) {
+        return handler.proxy(awsProxyRequest, context);
+    }
+
+
+	
 	
 }
