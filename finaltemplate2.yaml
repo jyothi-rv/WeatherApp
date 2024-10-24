@@ -118,7 +118,7 @@ Resources:
             FunctionName: !Ref LambdaFunctionSpringFunction
             Action: lambda:InvokeFunction
             Principal: apigateway.amazonaws.com
-            SourceAccount: 632384410667
+            SourceAccount: 176651566156
   
   SpringEventRule:
     Type: AWS::Events::Rule
