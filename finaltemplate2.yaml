@@ -33,7 +33,7 @@ Resources:
       Timeout: 15
       RuntimeManagementConfig:
         UpdateRuntimeOn: "Auto"
-      Handler: "org.ltimindtree.StreamLambdaHandler::handleRequest"
+      Handler: "com.weather.data.StreamLambdaHandler::handleRequest"
       Code:
         S3Bucket: my-first-latest-bucket
         S3Key: data-0.0.1-SNAPSHOT.jar
@@ -71,7 +71,7 @@ Resources:
         PointInTimeRecoveryEnabled: false
       KeySchema:
       - KeyType: "HASH"
-        AttributeName: "name"
+        AttributeName: "id"
       DeletionProtectionEnabled: false
       TableClass: "STANDARD"
       Tags: []
